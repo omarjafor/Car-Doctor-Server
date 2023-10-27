@@ -58,7 +58,10 @@ async function run() {
         })
 
         app.patch('/bookings/:id', async(req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) }
             const updatebooking = req.body;
+            
         })
 
         app.delete('/bookings/:id', async(req, res) => {
