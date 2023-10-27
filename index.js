@@ -61,7 +61,13 @@ async function run() {
             const id = req.params.id;
             const filter = { _id: new ObjectId(id) }
             const updatebooking = req.body;
-            
+            const updateDoc = {
+                $set: {
+                    status: updatebooking.status
+                }
+            };
+            const result = await bookingsCollection.updateOne(filter, updateDoc);
+            res.send(result);
         })
 
         app.delete('/bookings/:id', async(req, res) => {
