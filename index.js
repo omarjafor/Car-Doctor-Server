@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 require('dotenv').config();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
@@ -11,6 +12,7 @@ app.use(cors({
     credentials: true
 }));
 app.use(express.json());
+app.use(cookieParser());
 
 
 
@@ -60,6 +62,7 @@ async function run() {
 
         //Booking Related Api
         app.get('/bookings', async(req, res) => {
+            console.log('TokTok Token', req.cookies.token);
             let query = {};
             if(req.query?.email){
                 query = { email: req.query.email }
