@@ -28,19 +28,22 @@ const client = new MongoClient(uri, {
 
 //Custom Middlewares
 const logger = async(req, res, next) => {
-    console.log('Called:', req.host, req.originalUrl);
+    // console.log('Called:', req.host, req.originalUrl);
     next();
 }
 
 const verifyToken = async(req, res, next) => {
     const token = req.cookies?.token;
+    // console.log('Value of token in middleware', token);
     if(!token){
         return res.status(401).send({ message: 'not authorized'})
     }
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
         if(err){
+            // console.log(err);
             return res.status(401).send( {message: 'unauthorized'} )
         }
+        req.user = decoded;
         next()
     })
 }
@@ -64,7 +67,7 @@ async function run() {
         })
 
         // Services related api 
-        app.get('/services', async(req, res) => {
+        app.get('/services', logger, async(req, res) => {
             const cursor = serviceCollection.find();
             const result = await cursor.toArray();
             res.send(result);
@@ -78,8 +81,11 @@ async function run() {
         })
 
         //Booking Related Api
-        app.get('/bookings', verifyToken, async(req, res) => {
-            console.log('TokTok Token', req.cookies.token);
+        app.get('/bookings', logger, verifyToken, async(req, res) => {
+            // console.log('TokTok Token', req.cookies.token);
+            if(req.query.email !== req.user.email){
+                return res.status(403).send({message: 'forbidden access'})
+            }
             let query = {};
             if(req.query?.email){
                 query = { email: req.query.email }
