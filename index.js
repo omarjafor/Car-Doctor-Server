@@ -26,6 +26,24 @@ const client = new MongoClient(uri, {
     }
 });
 
+//Custom Middlewares
+const logger = async(req, res, next) => {
+    console.log('Called:', req.host, req.originalUrl);
+    next();
+}
+
+const verifyToken = async(req, res, next) => {
+    const token = req.cookies?.token;
+    if(!token){
+        return res.status(401).send({ message: 'not authorized'})
+    }
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+        if(err){
+            return res.status(401).send( {message: 'unauthorized'} )
+        }
+        next()
+    })
+}
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
@@ -60,7 +78,7 @@ async function run() {
         })
 
         //Booking Related Api
-        app.get('/bookings', async(req, res) => {
+        app.get('/bookings', verifyToken, async(req, res) => {
             console.log('TokTok Token', req.cookies.token);
             let query = {};
             if(req.query?.email){
