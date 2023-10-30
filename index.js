@@ -36,12 +36,12 @@ const verifyToken = async(req, res, next) => {
     const token = req?.cookies?.token;
     // console.log('Value of token in middleware', token);
     if(!token){
-        return res.status(401).send({ message: 'not authorized'})
+        return res.status(401).send({ message: 'UnAuthorized Access'})
     }
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
         if(err){
             // console.log(err);
-            return res.status(401).send( {message: 'unauthorized'} )
+            return res.status(401).send( {message: 'UnAuthorized Access'})
         }
         req.user = decoded;
         next()
