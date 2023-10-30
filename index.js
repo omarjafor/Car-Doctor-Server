@@ -33,7 +33,7 @@ const logger = async(req, res, next) => {
 }
 
 const verifyToken = async(req, res, next) => {
-    const token = req.cookies?.token;
+    const token = req?.cookies?.token;
     // console.log('Value of token in middleware', token);
     if(!token){
         return res.status(401).send({ message: 'not authorized'})
