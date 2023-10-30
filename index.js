@@ -90,7 +90,7 @@ async function run() {
         app.get('/bookings', logger, verifyToken, async(req, res) => {
             // console.log('TokTok Token', req.cookies.token);
             if(req.query.email !== req.user.email){
-                return res.status(403).send({message: 'forbidden access'})
+                return res.status(403).send({message: 'Forbidden Access'})
             }
             let query = {};
             if(req.query?.email){
