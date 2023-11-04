@@ -11,6 +11,7 @@ app.use(cors({
     origin: ['http://localhost:5173'],
     credentials: true
 }));
+
 app.use(express.json());
 app.use(cookieParser());
 
@@ -47,6 +48,7 @@ const verifyToken = async(req, res, next) => {
         next()
     })
 }
+
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
